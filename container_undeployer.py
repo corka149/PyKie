@@ -55,3 +55,5 @@ if selected != "q":
         container_results = r.delete(container_url + "/" + selected_container, auth=auth)
         print("Delete-request for container {} ends with {}.".format(selected_container, container_results.status_code))
         print(f'\nTime to complete {time.time() - start:.2f}s\n')
+        
+input("Request done [Press any key]")

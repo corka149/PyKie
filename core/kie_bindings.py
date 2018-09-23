@@ -15,4 +15,7 @@ def process_instances_variables(kie_server, container_id, process_id):
 
 
 def process_instance(kie_server, container_id, process_id, with_vars):
-    return process_instances(kie_server, container_id) + f"/processes/instances/{process_id}?withVars={with_vars}"
+    vars_requested = ""
+    if with_vars:
+        vars_requested = "?withVars={with_vars}"
+    return process_instances(kie_server, container_id) + f"/processes/instances/{process_id}" + vars_requested

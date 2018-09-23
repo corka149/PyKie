@@ -11,16 +11,11 @@ misc.print_banner()
 
 auth = ("kieserver", "kieserver1!")
 kie_servers = ["localhost:8080"]
-selected = ""
 
-while not (selected.isdigit() and 0 <= int(selected) < len(kie_servers)) and selected != "q":
-    print("Select one [q for quit]:")
-    for k, v in enumerate(kie_servers):
-        print("{}: {}".format(k, v))
-    selected = input("Choose one: ")
+kie_server = misc.force_to_input(kie_servers)
 
-if selected != "q":
-    base_url = "http://" + kie_servers[int(selected)] + "/kie-server/services/rest/server"
+if kie_server is not None:
+    base_url = "http://" + kie_server + "/kie-server/services/rest/server"
     container_url = base_url + "/containers"
     process_url = container_url + "/{}/processes"
     instance_url = process_url + "/instances"
@@ -30,15 +25,9 @@ if selected != "q":
 
     container_ids = [container.attrib["container-id"] for container in root.iter("kie-container")]
 
-    selected = ""
-    while not (selected.isdigit() and 0 <= int(selected) < len(container_ids)) and selected != "q":
-        print("\nSelect one [q for quit]")
-        for key, val in enumerate(container_ids):
-            print("{}: {}".format(key, val))
-        selected = input("Choose one: ")
+    selected_container = misc.force_to_input(container_ids)
 
-    if selected != "q":
-        selected_container = container_ids[int(selected)]
+    if selected_container is not None:
         definitions_result = r.get(instance_url.format(selected_container) + "?page=0&pageSize=100&sortOrder=true",
                                    auth=auth)
         instances = ET.fromstringlist(definitions_result.text)

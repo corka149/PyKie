@@ -1,3 +1,6 @@
+from getpass import getpass
+
+
 def print_request_result(r):
     print("------------------- Code")
     print(r.status_code)
@@ -36,3 +39,13 @@ def force_to_input(items):
         item = items[int(selected)]
 
     return item
+
+
+def request_credentials():
+    user = input("Input user [default=kieserver]")
+    password = getpass("Input password [kieserver1!]")
+    if len(user) == 0:
+        user = "kieserver"
+    if len(password) == 0:
+        password = "kieserver1!"
+    return user, password

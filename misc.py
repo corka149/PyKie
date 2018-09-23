@@ -7,8 +7,9 @@ def print_request_result(r):
     print(r.text)
     print("-------------------")
 
+
 def print_banner():
-    banner="""
+    banner = """
 
  _  ___         __              _                                     
 | |/ (_) ___   / _| ___  _ __  | |__  _   _ _ __ ___   __ _ _ __  ___ 
@@ -19,3 +20,19 @@ def print_banner():
 powered by requests (www.python-requests.org)
     """
     print(banner)
+
+
+def force_to_input(items):
+    """Forces an user to select an item from a list or exit with 'q'"""
+    selected = ""
+    while not (selected.isdigit() and 0 <= int(selected) < len(items)) and selected != "q":
+        print("\nSelect one [q for quit]")
+        for key, val in enumerate(items):
+            print("{}: {}".format(key, val))
+        selected = input("Choose one: ")
+
+    item = None
+    if selected is not "q":
+        item = items[int(selected)]
+
+    return item

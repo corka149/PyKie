@@ -1,9 +1,9 @@
 __author__ = "corka149"
 
+from core import KieClient
 import xml.etree.ElementTree as ET
 import requests as r
 import misc
-import time
 
 
 def main():
@@ -14,27 +14,17 @@ def main():
 
     if kie_server is not None:
         auth = misc.request_credentials()
+        kc = KieClient(kie_server, auth)
         base_url = "http://" + kie_server + "/kie-server/services/rest/server"
-        container_url = base_url + "/containers"
-        process_url = container_url + "/{}/processes"
-        instance_url = process_url + "/instances"
 
-        container_results = r.get(container_url, auth=auth)
-        root = ET.fromstring(container_results.text)
-
-        container_ids = [container.attrib["container-id"] for container in root.iter("kie-container")]
+        containers = kc.request_containers()
+        container_ids = [container.container_id for container in containers]
         selected_container = misc.force_to_input(container_ids)
 
         if selected_container is not None:
-            definitions_result = r.get(instance_url.format(selected_container) + "?page=0&pageSize=100&sortOrder=true",
-                                       auth=auth)
-            instances = ET.fromstringlist(definitions_result.text)
-            process_ids = list()
-            start = time.time()
-            for instance in instances.iter("process-instance"):
-                process_ids.append(instance.find("process-instance-id").text)
+            instances = kc.request_process_instances(selected_container)
+            process_id = misc.force_to_input([instance.process_instance_id for instance in instances])
 
-            process_id = misc.force_to_input(process_ids)
             if process_id is not None:
                 variables_resp = r.get(
                     f"{base_url}/containers/{selected_container}/processes/instances/{process_id}/variables/instances",

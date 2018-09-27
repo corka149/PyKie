@@ -1,6 +1,7 @@
 __author__ = "corka149"
 
 from pprint import pprint
+from core import KieClient
 import concurrent.futures
 import xml.etree.ElementTree as ET
 import requests as r
@@ -16,15 +17,14 @@ def main():
 
     if kie_server is not None:
         auth = misc.request_credentials()
+        kc = KieClient(kie_server, auth)
         base_url = "http://" + kie_server + "/kie-server/services/rest/server"
         container_url = base_url + "/containers"
         process_url = container_url + "/{}/processes"
         instance_url = process_url + "/instances"
 
-        container_results = r.get(container_url, auth=auth)
-        root = ET.fromstring(container_results.text)
-
-        container_ids = [container.attrib["container-id"] for container in root.iter("kie-container")]
+        containers = kc.request_containers()
+        container_ids = [container.container_id for container in containers]
         selected_container = misc.force_to_input(container_ids)
 
         if selected_container is not None:

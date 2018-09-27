@@ -7,15 +7,15 @@ def containers(kie_server):
 
 
 def process_instances(kie_server, container_id):
-    return containers(kie_server) + f"/{container_id}"
+    return containers(kie_server) + f"/{container_id}/processes/instances"
 
 
 def process_instances_variables(kie_server, container_id, process_id):
-    return process_instances(kie_server, container_id) + f"/processes/instances/{process_id}/variables"
+    return process_instances(kie_server, container_id) + f"/{process_id}/variables"
 
 
 def process_instance(kie_server, container_id, process_id, with_vars):
     vars_requested = ""
     if with_vars:
         vars_requested = "?withVars={with_vars}"
-    return process_instances(kie_server, container_id) + f"/processes/instances/{process_id}" + vars_requested
+    return process_instances(kie_server, container_id) + f"/{process_id}" + vars_requested

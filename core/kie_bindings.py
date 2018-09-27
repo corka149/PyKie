@@ -1,5 +1,5 @@
 
-base_url = "http://{kie_server}kie-server/services/rest/server"
+base_url = "http://{kie_server}/kie-server/services/rest/server"
 
 
 def containers(kie_server):

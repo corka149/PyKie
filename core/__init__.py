@@ -1,6 +1,7 @@
 from . import kie_bindings
 from . import models
 import requests
+import logging
 
 
 class KieClient:
@@ -22,5 +23,23 @@ class KieClient:
         instances = instances_result.json().get("process-instance")
         return [models.ProcessInstance(instance) for instance in instances]
 
+    def request_process_variables(self, container_id, process_instance_id):
+        url = kie_bindings.process_instances_variables(self.__kie_server__, container_id, process_instance_id)
+        variables_result = self.__get__(url)
+        return variables_result.json()
+
+    def delete_container(self, container_id):
+        url = kie_bindings.containers(container_id) + f"/{container_id}"
+        return self.__delete__(url).status_code
+
+    def delete_process_instance(self, container_id, process_instance_id):
+        url = kie_bindings.process_instances(self.__kie_server__, container_id) + f"/{process_instance_id}"
+        return self.__delete__(url).status_code
+
     def __get__(self, url):
+        logging.debug(f"GET - {url}")
         return requests.get(url, auth=self.__auth__, headers=self.__headers)
+
+    def __delete__(self, url):
+        logging.debug(f"DELETE - {url}")
+        return requests.delete(url, auth=self.__auth__)

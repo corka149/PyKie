@@ -1,8 +1,6 @@
 __author__ = "corka149"
 
 from core import KieClient
-import xml.etree.ElementTree as ET
-import requests as r
 import misc
 
 
@@ -15,7 +13,6 @@ def main():
     if kie_server is not None:
         auth = misc.request_credentials()
         kc = KieClient(kie_server, auth)
-        base_url = "http://" + kie_server + "/kie-server/services/rest/server"
 
         containers = kc.request_containers()
         container_ids = [container.container_id for container in containers]
@@ -26,13 +23,10 @@ def main():
             process_id = misc.force_to_input([instance.process_instance_id for instance in instances])
 
             if process_id is not None:
-                variables_resp = r.get(
-                    f"{base_url}/containers/{selected_container}/processes/instances/{process_id}/variables/instances",
-                    auth=auth)
-                variables = ET.fromstringlist(variables_resp.text)
-                variables = [(var.find("name").text, var.find("value").text) for var in variables]
-                for var in variables:
-                    print(f"\t{var[0]} : {var[1]}")
+                variables = kc.request_process_variables(selected_container, process_id)
+                for k, v in variables.items():
+                    print(f"key: {k} - value: {v}")
+
     input("Request done [Press any key]")
 
 

@@ -15,16 +15,16 @@ def main():
         auth = misc.request_credentials()
         kc = KieClient(kie_server, auth)
 
-        containers = kc.request_containers()
+        containers = kc.get_containers()
         container_ids = [container.container_id for container in containers]
         selected_container = misc.force_to_input(container_ids)
 
         if selected_container is not None:
-            instances = kc.request_process_instances(selected_container)
+            instances = kc.get_process_instances(selected_container)
             process_id = misc.force_to_input([instance.process_instance_id for instance in instances])
 
             if process_id is not None:
-                variables = kc.request_process_variables(selected_container, process_id)
+                variables = kc.get_process_variables(selected_container, process_id)
                 for k, v in variables.items():
                     print(f"key: {k} - value: {v}")
 

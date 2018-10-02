@@ -1,6 +1,7 @@
 __author__ = "corka149"
 
 from core import KieClient
+import logging as log
 import misc
 
 
@@ -31,4 +32,5 @@ def main():
 
 
 if __name__ == '__main__':
+    log.basicConfig(level=log.INFO)
     main()

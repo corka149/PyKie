@@ -1,12 +1,9 @@
 __author__ = "corka149"
 
-from pprint import pprint
 from core import KieClient
+import logging as log
 import concurrent.futures
-import xml.etree.ElementTree as ET
-import requests as r
 import misc
-import time
 
 
 def main():
@@ -18,35 +15,26 @@ def main():
     if kie_server is not None:
         auth = misc.request_credentials()
         kc = KieClient(kie_server, auth)
-        base_url = "http://" + kie_server + "/kie-server/services/rest/server"
-        container_url = base_url + "/containers"
-        process_url = container_url + "/{}/processes"
-        instance_url = process_url + "/instances"
 
         containers = kc.request_containers()
         container_ids = [container.container_id for container in containers]
-        selected_container = misc.force_to_input(container_ids)
+        container_id = misc.force_to_input(container_ids)
 
-        if selected_container is not None:
-            definitions_result = r.get(instance_url.format(selected_container) + "?page=0&pageSize=100&sortOrder=true",
-                                       auth=auth)
-            instances = ET.fromstringlist(definitions_result.text)
-            to_delete = list()
-            start = time.time()
-            for instance in instances.iter("process-instance"):
-                to_delete.append(instance_url.format(selected_container) + "/" + instance.find("process-instance-id").text)
+        if container_id is not None:
+            process_instances = kc.request_process_instances(container_id)
 
+            def delete_instance(instance):
+                return kc.delete_process_instance(container_id, instance.process_instance_id)
             with concurrent.futures.ThreadPoolExecutor() as executor:
-                result = tuple(executor.map(lambda url: r.delete(url, auth=auth), to_delete))
-                print("Amount of delete-requests: {}".format(len(result)))
-                pprint(result)
+                result = tuple(executor.map(delete_instance, process_instances))
+                log.info(str(result))
 
-            container_results = r.delete(container_url + "/" + selected_container, auth=auth)
-            print("Delete-request for container {} ends with {}.".format(selected_container, container_results.status_code))
-            print(f'\nTime to complete {time.time() - start:.2f}s\n')
+            status_code = kc.delete_container(container_id)
+            log.info("Delete-request for container {} ends with {}.".format(container_id, status_code))
 
     input("Request done [Press any key]")
 
 
 if __name__ == '__main__':
+    log.basicConfig(level=log.INFO)
     main()

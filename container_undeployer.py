@@ -16,12 +16,12 @@ def main():
         auth = misc.request_credentials()
         kc = KieClient(kie_server, auth)
 
-        containers = kc.request_containers()
+        containers = kc.get_containers()
         container_ids = [container.container_id for container in containers]
         container_id = misc.force_to_input(container_ids)
 
         if container_id is not None:
-            process_instances = kc.request_process_instances(container_id)
+            process_instances = kc.get_process_instances(container_id)
 
             def delete_instance(instance):
                 return kc.delete_process_instance(container_id, instance.process_instance_id)

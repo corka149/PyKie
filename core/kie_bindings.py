@@ -1,5 +1,5 @@
 
-base_url = "http://{kie_server}/kie-server/services/rest/server"
+base_url = "{kie_server}/kie-server/services/rest/server"
 
 
 def containers(kie_server):
@@ -27,3 +27,7 @@ def process_instance(kie_server, container_id, process_id, with_vars):
 
 def task_query(kie_server, process_id):
     return base_url.format(kie_server=kie_server) + f"/queries/tasks/instances/process/{process_id}"
+
+
+def task_state_complete(kie_server, container_id, task_id):
+    return containers(kie_server) + f"/{container_id}/tasks/{task_id}/states/completed?auto-progress=true"

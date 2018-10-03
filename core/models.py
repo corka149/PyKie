@@ -26,11 +26,12 @@ class ProcessInstance:
 class Task:
 
     def __init__(self, json):
-        self.task_id = json.get("task-id")
-        self.task_name = json.get("task-name")
-        self.task_description = json.get("task-description")
-        self.task_actual_owner = json.get("task-actual-owner")
-        self.task_created_on = datetime.fromtimestamp(json.get("task-created-on").get("java.util.Date") / 1000)
-        self.task_container_id = json.get("task-container-id")
-        self.task_proc_inst_id = json.get("task-proc-inst-id")
-        self.task_proc_def_id = json.get("task-proc-def-id")
+        self.id = json.get("task-id")
+        self.name = json.get("task-name")
+        self.description = json.get("task-description")
+        self.actual_owner = json.get("task-actual-owner")
+        self.created_on = datetime.fromtimestamp(json.get("task-created-on").get("java.util.Date") / 1000)
+        self.container_id = json.get("task-container-id")
+        self.proc_inst_id = json.get("task-proc-inst-id")
+        self.proc_def_id = json.get("task-proc-def-id")
+        self.status = json.get("task-status")

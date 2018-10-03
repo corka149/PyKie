@@ -6,8 +6,8 @@ import logging
 
 class KieClient:
 
-    def __init__(self, kie_server, auth):
-        self.__kie_server__ = kie_server
+    def __init__(self, kie_server, auth, protocol="http"):
+        self.__kie_server__ = protocol + "://" + kie_server
         self.__auth__ = auth
         self.__headers__ = {"accept": "application/json", "content-type": "application/json"}
 
@@ -36,7 +36,10 @@ class KieClient:
         url = kie_bindings.process_instances(self.__kie_server__, container_id) + f"/{process_instance_id}"
         return self.__request_delete__(url).status_code
 
-    def start_process(self, container_id, process_definition_id, variable_dict):
+    def start_process(self, container_id, process_definition_id, variable_dict=None):
+        """Starts a new process instance. It will return the status code of the request and the process id."""
+        if variable_dict is None:
+            variable_dict = dict()
         url = kie_bindings.process_definition_instances(self.__kie_server__, container_id, process_definition_id)
         resp = self.__request_post__(url, variable_dict)
         return resp.status_code, resp.json()
@@ -45,6 +48,13 @@ class KieClient:
         url = kie_bindings.task_query(self.__kie_server__, process_instance_id)
         resp = self.__request_get__(url)
         return [models.Task(json) for json in resp.json().get("task-summary")]
+
+    def complete_task(self, container_id, task_id, variable_dict=None):
+        """Completes a task and return the response status code."""
+        if variable_dict is None:
+            variable_dict = dict()
+        url = kie_bindings.task_state_complete(self.__kie_server__, container_id, task_id)
+        return self.__request_put__(url, variable_dict).status_code
 
     def __request_get__(self, url):
         logging.debug(f"GET - {url}")
@@ -57,3 +67,7 @@ class KieClient:
     def __request_post__(self, url, data):
         logging.debug(f"POST - {url} - Body: {data}")
         return requests.post(url, json=data, auth=self.__auth__, headers=self.__headers__)
+
+    def __request_put__(self, url, data):
+        logging.debug(f"PUT- {url} - Body: {data}")
+        return requests.put(url, json=data, auth=self.__auth__, headers=self.__headers__)

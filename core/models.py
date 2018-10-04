@@ -15,11 +15,11 @@ class KieContainer:
 class ProcessInstance:
 
     def __init__(self, json):
-        self.process_instance_id = json.get("process-instance-id")
-        self.process_id = json.get("process-id")
-        self.process_name = json.get("process-name")
-        self.process_version = json.get("process-version")
-        self.process_instance_state = json.get("process-instance-state")
+        self.id = json.get("process-instance-id")
+        self.definition_id = json.get("process-id")
+        self.definition_name = json.get("process-name")
+        self.version = json.get("process-version")
+        self.instance_state = json.get("process-instance-state")
         self.start_date = datetime.fromtimestamp(json.get("start-date").get("java.util.Date") / 1000)
 
 

@@ -23,7 +23,7 @@ class TestKieClient(TestCase):
         kc = KieClient("127.0.0.1:8180", auth)
         p_vars = {"buyer": "admin", "budget": 123.4, "shop": "Rewe", "onlyFood": True}
         _, process_id = kc.start_process(container, "CreatingBuyingList", p_vars)
-        tasks = kc.get_task_by_instance(process_id)
+        tasks = kc.get_tasks_by_instance(process_id)
         self.assertEqual(len(tasks), 1)
         items = {"items": {"bread": 1, "apple": 5, "sausage": 3}}
         resp = kc.complete_task(container, tasks[0].id, items)

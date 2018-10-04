@@ -14,14 +14,14 @@ class TestKieClient(TestCase):
 
     def test_start_process_instance(self):
         kc = KieClient("127.0.0.1:8180", auth)
-        p_vars = {"buyer": "admin", "budget": 222.55, "shop": "Rewe", "onlyFood": False}
+        p_vars = {"buyer": "admin", "budget": 222.55, "shop": "SuperBuy", "onlyFood": False}
         status_code, id = kc.start_process(container, process_def, p_vars)
         self.assertEqual(status_code, codes.created)
         self.assertTrue(id > 0)
 
     def test_complete_task(self):
         kc = KieClient("127.0.0.1:8180", auth)
-        p_vars = {"buyer": "admin", "budget": 123.4, "shop": "Rewe", "onlyFood": True}
+        p_vars = {"buyer": "admin", "budget": 123.4, "shop": "SuperBuy", "onlyFood": True}
         _, process_id = kc.start_process(container, "CreatingBuyingList", p_vars)
         tasks = kc.get_tasks_by_instance(process_id)
         self.assertEqual(len(tasks), 1)

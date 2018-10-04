@@ -25,6 +25,11 @@ class ProcessRunner:
         """Complete parallel active tasks with different variables."""
         pass
 
+    def is_done(self)-> bool:
+        """Returns true when process instance is finished"""
+        tasks = self.kie_client.get_tasks_by_instance(self.process_instance.id)
+        return len(tasks) == 0
+
 
 class MultiTaskVariables:
 

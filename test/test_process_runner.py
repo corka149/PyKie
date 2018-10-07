@@ -1,7 +1,7 @@
 __author__ = "corka149"
 
-from runner import ProcessRunner
-from core import KieClient
+from pykie.runner import ProcessRunner
+from pykie.core import KieClient
 from unittest import TestCase
 import unittest
 

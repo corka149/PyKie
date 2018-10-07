@@ -1,6 +1,6 @@
 __author__ = "corka149"
 
-from core import KieClient, KieServerUnavailableError
+from pykie.core import KieClient, KieServerUnavailableError
 from unittest import TestCase
 from requests import codes
 import unittest

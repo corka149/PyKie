@@ -1,8 +1,8 @@
 __author__ = "corka149"
 
-from core import KieClient
+from pykie.core import KieClient
 import logging as log
-import misc
+from pykie import misc
 
 
 def main():

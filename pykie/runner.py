@@ -2,8 +2,8 @@ import requests
 
 __author__ = "corka149"
 
-from core import KieClient
-from core.models import ProcessInstance
+from pykie.core import KieClient
+from pykie.core.models import ProcessInstance
 
 
 class ProcessLaunchError(Exception):

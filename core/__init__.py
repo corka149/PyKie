@@ -1,5 +1,4 @@
 from requests import RequestException
-from urllib3.exceptions import NewConnectionError, MaxRetryError
 
 from . import kie_bindings
 from . import models
@@ -36,6 +35,11 @@ class KieClient:
         instances_result = self.__request_get__(instances_url)
         instances = instances_result.json().get("process-instance")
         return [models.ProcessInstance(instance) for instance in instances]
+
+    def get_process_instance(self, container_id: str, process_id:str ):
+        instance_url = kie_bindings.process_instance(self.__kie_server__, container_id, process_id, False)
+        instance_result = self.__request_get__(instance_url)
+        return models.ProcessInstance(instance_result.json())
 
     def get_process_variables(self, container_id: str, process_instance_id: str):
         url = kie_bindings.process_instances_variables(self.__kie_server__, container_id, process_instance_id)

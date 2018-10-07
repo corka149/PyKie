@@ -1,7 +1,14 @@
+from requests import RequestException
+from urllib3.exceptions import NewConnectionError, MaxRetryError
+
 from . import kie_bindings
 from . import models
 import requests
 import logging
+
+
+class KieServerUnavailableError(Exception):
+    pass
 
 
 class KieClient:
@@ -10,6 +17,13 @@ class KieClient:
         self.__kie_server__ = protocol + "://" + kie_server
         self.__auth__ = auth
         self.__headers__ = {"accept": "application/json", "content-type": "application/json"}
+        try:
+            url = kie_bindings.kie_readycheck(self.__kie_server__)
+            resp = requests.get(url, auth=self.__auth__)
+            if resp.status_code != requests.codes.OK:
+                raise KieServerUnavailableError(f"{kie_server} is not ready yet.")
+        except RequestException:
+            raise KieServerUnavailableError(f"{kie_server} does not answer.")
 
     def get_containers(self):
         containers_url = kie_bindings.containers(self.__kie_server__)

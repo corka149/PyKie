@@ -2,6 +2,10 @@
 base_url = "{kie_server}/kie-server/services/rest/server"
 
 
+def kie_readycheck(kie_server):
+    return base_url.format(kie_server=kie_server) + "/readycheck"
+
+
 def containers(kie_server):
     return base_url.format(kie_server=kie_server) + "/containers"
 

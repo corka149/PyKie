@@ -18,6 +18,9 @@ class TestProcessRunner(TestCase):
         pr = ProcessRunner(kc, container, process_def)
         pr.start(p_vars)
         self.assertTrue(pr.process_instance is not None)
+        for _ in range(0, 4):
+            pr.step(None)
+        self.assertTrue(pr.is_done())
 
 
 if __name__ == '__main__':

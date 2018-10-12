@@ -47,7 +47,7 @@ class KieClient:
         return variables_result.json()
 
     def delete_container(self, container_id: str):
-        url = kie_bindings.containers(container_id) + f"/{container_id}"
+        url = kie_bindings.containers(self.__kie_server__) + f"/{container_id}"
         return self.__request_delete__(url).status_code
 
     def delete_process_instance(self, container_id: str, process_instance_id: str):

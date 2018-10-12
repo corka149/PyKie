@@ -12,8 +12,14 @@ def main():
     kie_server = misc.force_to_input(kie_servers)
 
     if kie_server is not None:
+        protocol = "http"
+        if "https" in kie_server:
+            protocol = "https"
+        if "http" in kie_server or "https" in kie_server:
+            kie_server = kie_server.split("//")[1]
+
         auth = misc.request_credentials()
-        kc = KieClient(kie_server, auth)
+        kc = KieClient(kie_server, auth, protocol)
 
         containers = kc.get_containers()
         container_ids = [container.container_id for container in containers]
@@ -21,10 +27,12 @@ def main():
 
         if selected_container is not None:
             instances = kc.get_process_instances(selected_container)
-            process_id = misc.force_to_input([instance.process_instance_id for instance in instances])
+            process_id = misc.force_to_input(
+                [instance.id for instance in instances])
 
             if process_id is not None:
-                variables = kc.get_process_variables(selected_container, process_id)
+                variables = kc.get_process_variables(
+                    selected_container, process_id)
                 for k, v in variables.items():
                     print(f"key: {k} - value: {v}")
 

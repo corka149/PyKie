@@ -42,8 +42,8 @@ def force_to_input(items):
 
 
 def request_credentials():
-    user = input("Input user [default=kieserver]")
-    password = getpass("Input password [default=kieserver1!]")
+    user = input("Input user [default=kieserver]:")
+    password = getpass("Input password [default=kieserver1!]:")
     if len(user) == 0:
         user = "kieserver"
     if len(password) == 0:

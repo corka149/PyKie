@@ -1,7 +1,10 @@
-import requests
+from typing import List
+from pykie.core import models
 
 __author__ = "corka149"
 
+
+import requests
 from pykie.core import KieClient
 from pykie.core.models import ProcessInstance
 
@@ -10,10 +13,31 @@ class ProcessLaunchError(Exception):
     pass
 
 
+class ConditionalTaskVariables:
+
+    def __init__(self, variables: dict, conditions: dict):
+        self.variables = variables
+        self.conditions = conditions
+
+    def matches(self, task: models.Task):
+        for tar_field, exp_value in self.conditions.items():
+            for attr_name, attr_value in task.__dict__.items():
+                if tar_field == attr_name and exp_value == attr_value:
+                    return True
+        return False
+
+
 class MultiTaskVariables:
 
     def __init__(self):
-        pass
+        self.conditional_variables: List[ConditionalTaskVariables] = list()
+
+    def add_conditional_variables(self, variables: dict, **conditions):
+        self.conditional_variables.append(ConditionalTaskVariables(variables, conditions))
+
+    def __iter__(self):
+        for conditional_task_variable in self.conditional_variables:
+            yield conditional_task_variable
 
 
 class ProcessRunner:
@@ -45,3 +69,11 @@ class ProcessRunner:
         """Returns true when process instance is finished"""
         tasks = self.kie_client.get_tasks_by_instance(self.process_instance.id)
         return len(tasks) == 0
+
+    @staticmethod
+    def __match_variables__(cond_variables, task: models.Task) -> dict:
+        variables = dict()
+        for cond_variable in cond_variables:
+            if cond_variable.matches(task):
+                variables.update(cond_variable.variables)
+        return variables

@@ -31,7 +31,7 @@ class KieClient:
         return [models.KieContainer(container) for container in containers]
 
     def get_process_instances(self, container_id: str):
-        instances_url = kie_bindings.process_instances(self.__kie_server__, container_id)
+        instances_url = kie_bindings.process_instances(self.__kie_server__, container_id) + "?pageSize=100"
         instances_result = self.__request_get__(instances_url)
         instances = instances_result.json().get("process-instance")
         return [models.ProcessInstance(instance) for instance in instances]

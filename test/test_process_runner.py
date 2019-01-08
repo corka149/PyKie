@@ -1,9 +1,10 @@
-__author__ = "corka149"
-
 from pykie.runner import ProcessRunner
 from pykie.core import KieClient
 from unittest import TestCase
 import unittest
+
+__author__ = "corka149"
+
 
 container = "py-kie-tes_1.0.0"
 process_def = "CreatingBuyingList"
